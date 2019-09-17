@@ -1,4 +1,4 @@
-package com.noon.mqttclientside;
+package com.noon.mqttclient;
 
 import org.junit.Test;
 
