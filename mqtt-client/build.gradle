@@ -1,4 +1,8 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+
+group='com.github.fastfishio'
+version = '1.0.1'
 
 android {
     compileSdkVersion 28
