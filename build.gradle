@@ -26,3 +26,22 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+ext {
+
+    /**
+     * Automate version name generation to be how far the current commit is from the last git tag.
+     */
+    getVersionName = { ->
+        try {
+            def stdout = new ByteArrayOutputStream()
+            exec {
+                commandLine 'git', 'describe'
+                standardOutput = stdout
+            }
+            return stdout.toString().trim()
+        } catch (error) {
+            return null
+        }
+    }
+}
