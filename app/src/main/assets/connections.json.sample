@@ -1,0 +1,9 @@
+{
+  "CLIENT_PRIVATE_KEY" : "...",
+  "HOST_URL" : "...",
+  "PROJECT_ID" : "...",
+  "PUBLISH_TOPIC" : "...",
+  "RECEIVE_TOPIC" : "...",
+  "TEST_PAYLOAD": "...",
+  "CLIENT_ID" : "..."
+}

@@ -62,3 +62,6 @@ fastlane/readme.md
 
 # Mac OS
 .DS_Store
+
+# demo config
+app/src/main/assets/connections.json
