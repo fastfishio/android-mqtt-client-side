@@ -24,11 +24,19 @@ public interface MqttHelper {
 
     void removeOnMessageArrivedListener(OnMessageArrivedListener listener);
 
+    void addOnConnectionLostListener(OnConnectionLostListener listener) ;
+
+    void removeOnConnectionLostListener(OnConnectionLostListener listener);
+
     interface OnConnectionSuccessListener {
         void onConnectionCompleted();
     }
 
     interface OnMessageArrivedListener {
         void onMessageArrived(String topic, String message);
+    }
+
+    interface OnConnectionLostListener {
+        void onConnectionLost();
     }
 }

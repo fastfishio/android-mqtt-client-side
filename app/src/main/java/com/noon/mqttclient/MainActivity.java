@@ -38,18 +38,29 @@ public class MainActivity extends AppCompatActivity {
         mqttHelper.connect();
         mqttHelper.addOnConnectionSuccessListener(() -> {
             mqttHelper.subscribe(inputs.RECEIVE_TOPIC);
-            new Timer().scheduleAtFixedRate(new TimerTask(){
-                @Override
-                public void run(){
-                    Log.d(TAG, "Publishing " + inputs.TEST_PAYLOAD);
-                    mqttHelper.publish(inputs.PUBLISH_TOPIC, inputs.TEST_PAYLOAD);
-                }
-            },0,15000);
+            createTask(mqttHelper);
             Log.d(TAG, "connection success!");
         });
         mqttHelper.addOnMessageArrivedListener((topic, message) -> {
             Log.d(TAG, topic + " " + message);
         });
+        mqttHelper.addOnConnectionLostListener(() -> {
+            Log.d(TAG, "connection lost!");
+        });
 
+    }
+
+    private Timer timer = null;
+    private void createTask(MqttHelper mqttHelper) {
+        if (timer != null) return;
+        Inputs inputs = new Inputs(this);
+        timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask(){
+            @Override
+            public void run(){
+                Log.d(TAG, "Publishing " + inputs.TEST_PAYLOAD);
+                mqttHelper.publish(inputs.PUBLISH_TOPIC, inputs.TEST_PAYLOAD);
+            }
+        },0,15000);
     }
 }

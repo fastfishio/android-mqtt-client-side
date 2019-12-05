@@ -24,7 +24,7 @@ import io.jsonwebtoken.Jwts;
 public class PasswordGenerator {
 
     private static final String SIGNING_ALGORITHM = "RSA";
-    private static final int PASSWORD_EXPIRY_LENGTH = 20; // minutes
+    private static final int PASSWORD_EXPIRY_LENGTH = 60 * 24; // minutes
     private static final int PERIOD_BETWEEN_PASSWORD_GENERATION = 1; // minutes
 
     private final String mKey;
@@ -44,8 +44,9 @@ public class PasswordGenerator {
     void generatePeriodically() {
         if (mExecutorService != null) return;
         mExecutorService = Executors.newSingleThreadScheduledExecutor();
+        notifyListenerWithNewPassword();
         mExecutorService.scheduleAtFixedRate(this::notifyListenerWithNewPassword,
-                /* Initial delay */0, PERIOD_BETWEEN_PASSWORD_GENERATION, TimeUnit.MINUTES);
+                PERIOD_BETWEEN_PASSWORD_GENERATION, PERIOD_BETWEEN_PASSWORD_GENERATION, TimeUnit.MINUTES);
     }
 
     void stopGenerating() {

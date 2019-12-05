@@ -1,6 +1,7 @@
 package com.noon.mqtt;
 
 import android.content.Context;
+import android.util.Log;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -29,6 +30,7 @@ public class MqttHelperImp implements MqttHelper {
     private final String mConnectionUserName;
 
     private final List<OnConnectionSuccessListener> mOnConnectionSuccessListeners = new LinkedList<>();
+    private final List<OnConnectionLostListener> mOnConnectionLostListeners = new LinkedList<>();
     private final List<OnMessageArrivedListener> mOnMessageArrivedListeners = new LinkedList<>();
 
     private MqttHelperImp(MqttHelperBuilder builder) {
@@ -77,12 +79,14 @@ public class MqttHelperImp implements MqttHelper {
         mMqttClient.setCallback(new MqttCallbackExtended() {
             @Override
             public void connectComplete(boolean reconnect, String serverURI) {
+                Log.d("manager", "mqtt connected");
                 notifyOnConnectionSuccessListeners();
             }
 
             @Override
             public void connectionLost(Throwable cause) {
-                /* No-op */
+                Log.d("manager", "mqtt disconnected");
+                notifyOnConnectionLostListeners();
             }
 
             @Override
@@ -96,6 +100,12 @@ public class MqttHelperImp implements MqttHelper {
                 /* No-op */
             }
         });
+    }
+
+    private void notifyOnConnectionLostListeners() {
+        for (OnConnectionLostListener listener : mOnConnectionLostListeners) {
+            if (listener != null) listener.onConnectionLost();
+        }
     }
 
     private void trySubscribing(String topic) {
@@ -171,6 +181,16 @@ public class MqttHelperImp implements MqttHelper {
     @Override
     public void removeOnConnectionSuccessListener(OnConnectionSuccessListener listener) {
         mOnConnectionSuccessListeners.remove(listener);
+    }
+
+    @Override
+    public void addOnConnectionLostListener(OnConnectionLostListener listener) {
+        mOnConnectionLostListeners.add(listener);
+    }
+
+    @Override
+    public void removeOnConnectionLostListener(OnConnectionLostListener listener) {
+        mOnConnectionLostListeners.remove(listener);
     }
 
     @Override
